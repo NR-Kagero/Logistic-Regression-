@@ -1,2 +1,2 @@
-# Logistic-Regression-
+# Logistic-Regression
 Logistic regression class 
