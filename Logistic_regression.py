@@ -1,6 +1,4 @@
-import random
 import numpy as np
-
 class LogisticRegression():
     def __init__(self, learning_rate=0.05, maxIter=1000, error_ratio=0.0001, L1=0, batch_size=1, beta_1=0.9, beta_2=0.9,
                  epsilon=0.5):
@@ -75,7 +73,6 @@ class LogisticRegression():
                 epoch_bar.update(1)
                 epoch_bar.set_postfix({'Accuracy ': f'{1 - Error:.3f}'})
                 if self.__error_ratio > Error:
-                    print(Error)
                     return
             del epoch_bar
 
@@ -87,15 +84,13 @@ class LogisticRegression():
         return class_f
 
     def evaluate(self, X_test, Y_test):
+        Y_test=np.array(Y_test).reshape(-1)
         res = self.predict(X_test)
-        acc = 0
-        for i in range(len(res)):
-            if res[i] == Y_test[i]:
-                acc += 1
+        assert Y_test.shape == res.shape, f"Shape mismatch: y_true shape {Y_test.shape} and y_pred shape {res.shape} must have the same shape."
+        acc = np.sum(res==Y_test)
         return acc / len(Y_test)
 
     def _error(self, H, Y, L1=0):
-        print((L1 / (2 * len(H))) * np.sum(np.abs(self.__weigths)))
         er = - np.mean(((Y * np.log(H + 1e-10)) + ((1 - Y) * np.log(1 - H + 1e-10))) + (L1 / (2 * len(H))) * np.sum(
             np.abs(self.__weigths)))
         return er
