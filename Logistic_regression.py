@@ -1,4 +1,19 @@
 import numpy as np
+from tqdm import tqdm
+
+
+def K_fold(data, K=5):
+    fold_size = data.shape[0] // K
+    folds = np.zeros([K, fold_size, 785])
+    ready_data = np.array(data, dtype=object)
+    for i in range(K):
+        indices = np.random.choice(ready_data.shape[0], size=fold_size, replace=False)
+        work_fold = ready_data[indices]
+        folds[i] = np.array(work_fold)
+        ready_data = np.delete(ready_data, indices, axis=0)
+    folds = np.array(folds).reshape(10, -1, 785)
+    return folds
+
 class LogisticRegression():
     def __init__(self, learning_rate=0.05, maxIter=1000, error_ratio=0.0001, L1=0, batch_size=1, beta_1=0.9, beta_2=0.9,
                  epsilon=0.5):
@@ -86,7 +101,7 @@ class LogisticRegression():
     def evaluate(self, X_test, Y_test):
         Y_test=np.array(Y_test).reshape(-1)
         res = self.predict(X_test)
-        assert Y_test.shape == res.shape, f"Shape mismatch: y_true shape {Y_test.shape} and y_pred shape {res.shape} must have the same shape."
+        assert Y_test.shape == res.shape, f"Shape mismatch: y_true shape {Y_test.shape} and y_pred shape {Y_test.shape} must have the same shape."
         acc = np.sum(res==Y_test)
         return acc / len(Y_test)
 
